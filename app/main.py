@@ -110,6 +110,24 @@ def login_form(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = D
         "access_token": auth_result["access_token"],
         "token_type": "bearer"
     }
+# ------------------------------------------------------------------------------
+# Additional User Endpoints
+# ------------------------------------------------------------------------------
+@app.post(
+    "/users/register",
+    response_model=UserResponse,
+    status_code=status.HTTP_201_CREATED,
+    tags=["users"],
+)
+def register_user(user_create: UserCreate, db: Session = Depends(get_db)):
+    """Wrapper around the /auth/register logic for /users/register."""
+    return register(user_create, db)
+
+
+@app.post("/users/login", response_model=TokenResponse, tags=["users"])
+def login_user(user_login: UserLogin, db: Session = Depends(get_db)):
+    """Wrapper around the /auth/login logic for /users/login."""
+    return login_json(user_login, db)
 
 # ------------------------------------------------------------------------------
 # Calculations Endpoints (BREAD)
