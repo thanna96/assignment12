@@ -4,8 +4,8 @@ from pydantic_settings import BaseSettings
 from typing import Optional, List
 
 class Settings(BaseSettings):
-    # Database settings (keeping your existing default)
-    DATABASE_URL: str = "postgresql://postgres:postgres@localhost:5432/fastapi_db"
+    # Database settings - default to a local SQLite database for easier testing
+    DATABASE_URL: str = "sqlite:///./test.db"
     
     # JWT Settings
     JWT_SECRET_KEY: str = "your-super-secret-key-change-this-in-production"

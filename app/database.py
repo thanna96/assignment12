@@ -7,7 +7,13 @@ from app.core.config import settings
 SQLALCHEMY_DATABASE_URL = settings.DATABASE_URL
 
 # Create the default engine and sessionmaker
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+if SQLALCHEMY_DATABASE_URL.startswith("sqlite"):
+    engine = create_engine(
+        SQLALCHEMY_DATABASE_URL,
+        connect_args={"check_same_thread": False}
+    )
+else:
+    engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
@@ -22,6 +28,8 @@ def get_db():
 # --- New Functions Added ---
 def get_engine(database_url: str = SQLALCHEMY_DATABASE_URL):
     """Factory function to create a new SQLAlchemy engine."""
+    if database_url.startswith("sqlite"):
+        return create_engine(database_url, connect_args={"check_same_thread": False})
     return create_engine(database_url)
 
 def get_sessionmaker(engine):
